@@ -83,18 +83,33 @@ import type { NextConfig } from "next";
 
 
 
-const nextConfig = {
-  output: "standalone",
+// const nextConfig = {
+//   output: "standalone",
+//   skipTrailingSlashRedirect: true,
+// };
+
+
+// module.exports = {
+//   allowedDevOrigins: ['192.168.1.3'],
+//   skipTrailingSlashRedirect: true,
+// }
+
+// export default nextConfig;
+
+import type { NextConfig } from 'next';
+
+const nextConfig: NextConfig = {
+  output: 'standalone',
   skipTrailingSlashRedirect: true,
+  turbopack: {
+    root: __dirname,
+  },
+  productionBrowserSourceMaps: false,
+  compress: true,
+  poweredByHeader: false,
+  allowedDevOrigins: ['192.168.1.3'],
 };
 
-
-module.exports = {
-  allowedDevOrigins: ['192.168.1.3'],
-  skipTrailingSlashRedirect: true,
-}
-
 export default nextConfig;
-
 
 
