@@ -1,0 +1,45 @@
+{
+  "brand": {
+    "name": "MyCareerKits",
+    "tagline": "Your all-in-one career platform. Build resumes, find jobs, write cover letters, and grow with AI-powered tools."
+  },
+  "countries": [
+    {"code": "GB", "label": "UK", "flag": "🇬🇧"},
+    {"code": "US", "label": "USA", "flag": "🇺🇸"},
+    {"code": "AU", "label": "AUS", "flag": "🇦🇺"},
+    {"code": "CA", "label": "CA", "flag": "🇨🇦"}
+  ],
+  "nav": {
+    "platform": [
+      {"label": "Resume Builder", "href": "/resume"},
+      {"label": "Job Search", "href": "/jobs"},
+      {"label": "Cover Letters", "href": "/cover-letter"}
+    ],
+    "company": [
+      {"label": "About Us", "href": "/about"},
+      {"label": "Contact", "href": "/contact"},
+      {"label": "Blog", "href": "/blog"},
+      {"label": "Careers", "href": "/careers"},
+      {"label": "Press", "href": "/press"}
+    ],
+    "legal": [
+      {"label": "Privacy Policy", "href": "/privacy"},
+      {"label": "Terms of Service", "href": "/terms"},
+      {"label": "Cookie Policy", "href": "/cookies"},
+      {"label": "GDPR", "href": "/gdpr"},
+      {"label": "Accessibility", "href": "/accessibility"},
+      {"label": "Security", "href": "/security"}
+    ]
+  },
+  "legal": {
+    "companyNumber": "XXXXXXXX",
+    "registeredAddress": "[Your Address], United Kingdom",
+    "copyright": "© 2025 MyCareerKits. A product of Shenmibox Ltd — Registered in England & Wales."
+  },
+  "social": [
+    {"platform": "linkedin", "href": "https://linkedin.com"},
+    {"platform": "x", "href": "https://x.com"},
+    {"platform": "instagram", "href": "https://instagram.com"},
+    {"platform": "facebook", "href": "https://facebook.com"}
+  ]
+}
