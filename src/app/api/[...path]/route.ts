@@ -8,6 +8,7 @@ async function handler(req: NextRequest) {
 
   const headers = new Headers(req.headers);
   headers.delete("host");
+  headers.delete("connection");
 
   const response = await fetch(target, {
     method: req.method,
