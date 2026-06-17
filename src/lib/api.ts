@@ -14,8 +14,8 @@ const processQueue = (error: unknown) => {
   failedQueue = [];
 };
 
-const api = axios.create({
-  baseURL: "",
+export const api = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
   withCredentials: true,
   headers: { "Content-Type": "application/json" },
 });
@@ -78,8 +78,8 @@ function sanitize(msg: string): string {
     .replace(/Traceback \(most recent call last\)[\s\S]*/i, "")  // Python traceback
     .trim();
 
-  // If it still looks like internal code return empty so the caller falls back
-  if (/[{}<>]|undefined|None\b|null\b|traceback|stack/i.test(clean) || clean.length === 0) {
+  // Optimized safety check: Avoid filtering out genuine validation text containing "None", "null", or structural words
+  if (/Traceback|Stack\s+trace|(?:\w+\.py",\s+line\s+\d+)/i.test(clean) || clean.length === 0) {
     return "";
   }
   return clean.charAt(0).toUpperCase() + clean.slice(1);
@@ -104,7 +104,6 @@ function statusMessage(status: number): string {
     case 503: return "AI service is temporarily unavailable. Please try again in a moment.";
     case 504: return "The request timed out. Please try again.";
     default:
-      // Range-based fallbacks catch any code not listed above
       if (status >= 400 && status < 500) return "Request error. Please check your input and try again.";
       if (status >= 500 && status < 600) return "Server error. Please try again in a moment.";
       return "Something went wrong. Please try again.";
@@ -113,7 +112,6 @@ function statusMessage(status: number): string {
 
 export function parseBackendError(error: unknown): string {
   if (axios.isAxiosError(error)) {
-    // No network response at all
     if (!error.response) {
       return "You appear to be offline. Check your connection and try again.";
     }
@@ -121,9 +119,16 @@ export function parseBackendError(error: unknown): string {
     const data = error.response?.data;
     const status = error.response?.status;
 
-    // Try to pull human-readable messages out of the response body first
+    // 1. Core Intercept: Trap raw Django validation issues before they hit the general sanitizer
+    if (data) {
+      const dataString = typeof data === "string" ? data : JSON.stringify(data);
+      if (dataString.includes("Expected a dictionary, but got list")) {
+        return "The server received data in an unexpected format. Please refresh the page and try again.";
+      }
+    }
+
+    // 2. Standard Framework Parsing Strategy
     if (data && typeof data === "object") {
-      // Priority order: errors → error → detail → non_field_errors → message → whole body
       const candidates = [
         data.errors,
         data.error,
@@ -137,17 +142,13 @@ export function parseBackendError(error: unknown): string {
         if (messages.length > 0) return messages.join(" ");
       }
 
-      // Last resort: scan the entire body
-      // (catches e.g. { "role": ["This field is required."] })
       const bodyMessages = extractMessages(data).map(sanitize).filter(Boolean);
       if (bodyMessages.length > 0) return bodyMessages.join(" ");
     }
 
-    // Nothing useful in the body — fall back to the status code
     return statusMessage(status ?? 0);
   }
 
-  // Non-Axios errors (e.g. thrown manually in hooks)
   if (error instanceof Error) {
     const clean = sanitize(error.message);
     return clean || "Something went wrong. Please try again.";
