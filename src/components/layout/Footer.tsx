@@ -5,7 +5,7 @@ import { Linkedin, Facebook, Instagram, Sparkles } from "lucide-react";
 import footerConfig from "@/config/footer.json";
 import type { FooterConfig } from "@/types";
 
-const config: FooterConfig = footerConfig;
+const config = footerConfig as FooterConfig;
 
 const XIcon = () => (
   <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
