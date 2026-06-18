@@ -66,25 +66,23 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   });
 
   const login = async (email: string, password: string) => {
-    // Backend returns only { msg: 'Login Success' } and sets cookies
-    // so we invalidate the cache and let /dashboard re-fetch /api/auth/me/
-    // naturally once the session cookie is set
-    await api.post("/api/auth/login/", { email, password });
-    qc.invalidateQueries({ queryKey: AUTH_KEY });
-  };
+  await api.post("/api/auth/login/", { email, password });
+  await qc.invalidateQueries({ queryKey: AUTH_KEY });
+  await qc.refetchQueries({ queryKey: AUTH_KEY });
+};
 
   const signup = async (data: {
-    email: string;
-    name: string;
-    username: string;
-    password: string;
-    password2: string;
-    tc: boolean;
-  }) => {
-    await api.post("/api/auth/signup/", data);
-    qc.invalidateQueries({ queryKey: AUTH_KEY });
-  };
-
+  email: string;
+  name: string;
+  username: string;
+  password: string;
+  password2: string;
+  tc: boolean;
+}) => {
+  await api.post("/api/auth/signup/", data);
+  await qc.invalidateQueries({ queryKey: AUTH_KEY });
+  await qc.refetchQueries({ queryKey: AUTH_KEY });
+};
   const logout = async () => {
     try {
       await api.post("/api/auth/logout/");
